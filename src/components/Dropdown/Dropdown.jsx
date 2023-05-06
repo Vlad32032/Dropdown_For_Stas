@@ -6,8 +6,8 @@ import { IconMagnifier } from "./icons/IconMagnifier.jsx"
 import { IconCheckbox } from "./icons/IconCheckbox.jsx"
 import { IconClose } from "./icons/IconClose.jsx"
 
-function Dropdown({ placeHolder, languages }) {
-
+function Dropdown({ placeHolder, languages, multiSelect, flagShow }) {
+    
     // Состояния показа меню по умолчанию и выбранного значения(по умолчанию пустой массив) и значения поиска
     const [showMenu, setShowMenu] = useState(false);
     const [selectedValue, setSelectedValue] = useState([]);
@@ -49,16 +49,21 @@ function Dropdown({ placeHolder, languages }) {
         e.stopPropagation();
 
         let newValue;
-        // если в selectedValue уже есть выбранное значение,
-        // то массив отфильтруеться и вернется массив без выбранного значения
-        if (selectedValue.findIndex((o) => o.value === lang.value) >= 0) {
-            newValue = filterLang(lang);
-        } else {
-            // если нет, то будет создан новый массив со всеми значениями из selectedValue и выбранным значением
-            newValue = [...selectedValue, lang];
-        }
 
-        setSelectedValue(newValue);
+        if (multiSelect) {
+            // если в selectedValue уже есть выбранное значение,
+            // то массив отфильтруеться и вернется массив без выбранного значения
+            if (selectedValue.findIndex((o) => o.value === lang.value) >= 0) {
+                newValue = filterLang(lang);
+            } else {
+                // если нет, то будет создан новый массив со всеми значениями из selectedValue и выбранным значением
+                newValue = [...selectedValue, lang];
+            }
+
+            setSelectedValue(newValue);
+        } else {
+            setSelectedValue([lang]);
+        }
     };
 
     // Функция проверки выбора значения(языка)
@@ -106,7 +111,7 @@ function Dropdown({ placeHolder, languages }) {
                 <div className={classes.dropdownSelectedValue}>
                     {getSelectedValue()}
                 </div>
-                <div className={classes.dropdownTools}>
+                <div className={`${classes.dropdownTools} ${showMenu? classes.dropdownToolsOn : ""}`}>
                     <IconArrow />         
                 </div>
             </div>
@@ -126,15 +131,22 @@ function Dropdown({ placeHolder, languages }) {
                     </div>
                     {getLang().map((lang) => (
                         <div onClick={(e) => chooseValue(lang, e)} key={lang.id} className={classes.dropdownMenuLang}>
-                            <div className={classes.dropdownMenuFlag}>
-                                {lang.flag()}
-                            </div>
+                            { flagShow && (
+                                <div className={classes.dropdownMenuFlag}>
+                                    {lang.flag()}
+                                </div>
+                            )}
                             <div className={classes.dropdownMenuValue}>{lang.value}</div>
                             <div className={`${classes.dropdownMenuCheckbox} ${isSelected(lang) && classes.active}`}>
                                 <IconCheckbox />
                             </div>
                         </div>
-                    ))}            
+                    ))}
+                    { (getLang().length === 0) &&
+                        <div className={classes.dropdownMenuLang}>
+                            <div className={classes.dropdownMenuValue}>Ничего не найденно</div>
+                        </div>
+                    }        
                 </div>
             )}
         </div>

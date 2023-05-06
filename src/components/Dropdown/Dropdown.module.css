@@ -72,6 +72,10 @@
     align-items: center;
 }
 
+.dropdownToolsOn {
+    transform: rotate(180deg);
+}
+
 .dropdownMenu {
     position: absolute;
 
@@ -157,3 +161,4 @@
     background: #005FFD;
     border: 2px solid #0049D9;;
 }
+

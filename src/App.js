@@ -150,7 +150,8 @@ function App() {
 
   return (
     <div className="App">
-      <Dropdown placeHolder="Выбрать язык" languages={languageList} />
+      <Dropdown placeHolder="Выбрать язык" languages={languageList} multiSelect flagShow />
+      <Dropdown placeHolder="Выбрать язык" languages={languageList}/>
     </div>
 
 );
